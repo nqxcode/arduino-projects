@@ -42,7 +42,6 @@ int melody[] = {
   NOTE_D6, NOTE_D6, NOTE_AS6, NOTE_A6, NOTE_G6, NOTE_FS6,
 
   NOTE_G6,
-
 };
 
 int noteDurations[] = {
@@ -95,18 +94,14 @@ float getCurrentTempo()
   return currentTempo;
 }
 
-void setup() //процедура setup
+void setup() 
 {
-
-  pinMode(13, OUTPUT); //указываем, что светодиод - выход
-  pinMode(3, OUTPUT); //указываем, что светодиод - выход
+  pinMode(3, OUTPUT); 
   Serial.begin(9600);
-
 }
 
 void loop() //процедура loop
 {
-
   int totalNotes = sizeof(melody) / sizeof(int);
   for (int thisNote = 0; thisNote < totalNotes; thisNote++) {
 
