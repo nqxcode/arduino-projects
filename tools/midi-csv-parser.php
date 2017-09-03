@@ -51,6 +51,6 @@ if (count($notes) > 0) {
     $durations[] = ($keys[$i - 1] - $keys[$i - 2]) * 2; // duration for last note
 
     echo PHP_EOL . 'Note durations (ms): ' . PHP_EOL;
-    echo implode(', ', $durations);
+    echo implode(', ', $durations) . PHP_EOL;
 
 }
