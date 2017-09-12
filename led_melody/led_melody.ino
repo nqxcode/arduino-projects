@@ -32,7 +32,7 @@ void loop()
     } else if (note >= 262 && note <= 494) { // 4 octave
       note = (int)round(note / 2);
 
-    } else if (note >= 523 && note <= 988) { // 4 octave
+    } else if (note >= 523 && note <= 988) { // 5 octave
       note = (int)round(note / 4);
     }
     
