@@ -5,7 +5,7 @@
 #define THERMISTOR_NOMINAL 100000 // сопротивление при 25 градусах по Цельсию
 #define TEMPERATURE_NOMINAL 25 // температура для номинального сопротивления (практически всегда равна 25 C)
 #define COUNT_OF_MEASUREMENTS 15 // сколько показаний используем для определения среднего значения
-#define B_COEFFICIENT 3950 // бета коэффициент термистора (обычно 3000-4000)
+#define B_COEFFICIENT 3100 // бета коэффициент термистора (обычно 3000-4000)
 #define SERIES_RESISTOR 100000 // сопротивление второго резистора
 
 int measurements[COUNT_OF_MEASUREMENTS];
