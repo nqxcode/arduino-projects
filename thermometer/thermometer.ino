@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 #include <math.h>
 
-#define THERMISTORPIN A0 // к какому аналоговому пину мы подключены
+#define THERMISTORPIN A0 // к какому аналоговому пину подключен термистор
 #define THERMISTORNOMINAL 100000 // сопротивление при 25 градусах по Цельсию
 #define TEMPERATURENOMINAL 25 // temp. для номинального сопротивления (практически всегда равна 25 C)
 #define NUMSAMPLES 5 // сколько показаний используем для определения среднего значения
