@@ -1,12 +1,12 @@
 #include <LiquidCrystal.h>
 #include <math.h>
 
-#define THERMISTORPIN A0 // к какому аналоговому пину подключен термистор
-#define THERMISTORNOMINAL 100000 // сопротивление при 25 градусах по Цельсию
-#define TEMPERATURENOMINAL 25 // temp. для номинального сопротивления (практически всегда равна 25 C)
+#define THERMISTOR_PIN A0 // к какому аналоговому пину подключен термистор
+#define THERMISTOR_NOMINAL 100000 // сопротивление при 25 градусах по Цельсию
+#define TEMPERATURE_NOMINAL 25 // температура для номинального сопротивления (практически всегда равна 25 C)
 #define COUNT_OF_MEASUREMENTS 15 // сколько показаний используем для определения среднего значения
-#define BCOEFFICIENT 3950 // бета коэффициент термистора (обычно 3000-4000)
-#define SERIESRESISTOR 100000 // сопротивление второго резистора
+#define B_COEFFICIENT 3950 // бета коэффициент термистора (обычно 3000-4000)
+#define SERIES_RESISTOR 100000 // сопротивление второго резистора
 
 int measurements[COUNT_OF_MEASUREMENTS];
 
@@ -27,7 +27,7 @@ void loop(void) {
 
   // снимаем показания несколько раз с небольшой задержкой между снятием показаний
   for (i = 0; i < COUNT_OF_MEASUREMENTS; i++) {
-    measurements[i] = analogRead(THERMISTORPIN);
+    measurements[i] = analogRead(THERMISTOR_PIN);
     delay(10);
   }
 
@@ -41,13 +41,13 @@ void loop(void) {
 
   // конвертируем значение в сопротивление
   resistence = 1023 / averageMeasurement - 1;
-  resistence = SERIESRESISTOR / resistence;
+  resistence = SERIES_RESISTOR / resistence;
 
   // конвертируем значение в температуру
-  temperature = resistence / THERMISTORNOMINAL; // (R/Ro)
+  temperature = resistence / THERMISTOR_NOMINAL; // (R/Ro)
   temperature = log(temperature); // ln(R/Ro)
-  temperature /= BCOEFFICIENT; // 1/B * ln(R/Ro)
-  temperature += 1.0 / (TEMPERATURENOMINAL + 273.15); // + (1/To)
+  temperature /= B_COEFFICIENT; // 1/B * ln(R/Ro)
+  temperature += 1.0 / (TEMPERATURE_NOMINAL + 273.15); // + (1/To)
 
   temperature = 1.0 / temperature; // инвертируем
   temperature -= 273.15; // конвертируем в градусы по Цельсию
