@@ -4,17 +4,15 @@
 #define THERMISTORPIN A0 // к какому аналоговому пину подключен термистор
 #define THERMISTORNOMINAL 100000 // сопротивление при 25 градусах по Цельсию
 #define TEMPERATURENOMINAL 25 // temp. для номинального сопротивления (практически всегда равна 25 C)
-#define NUMSAMPLES 5 // сколько показаний используем для определения среднего значения
+#define COUNT_OF_MEASUREMENTS 15 // сколько показаний используем для определения среднего значения
 #define BCOEFFICIENT 3950 // бета коэффициент термистора (обычно 3000-4000)
 #define SERIESRESISTOR 100000 // сопротивление второго резистора
 
-int measurements[NUMSAMPLES];
+int measurements[COUNT_OF_MEASUREMENTS];
 
 LiquidCrystal lcd(12, 11, 10, 5, 4, 3, 2); // инициализируем LCD
 
 void setup(void) {
-  Serial.begin(9600);
-
   lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -28,18 +26,18 @@ void loop(void) {
   float resistence;
 
   // снимаем показания несколько раз с небольшой задержкой между снятием показаний
-  for (i = 0; i < NUMSAMPLES; i++) {
+  for (i = 0; i < COUNT_OF_MEASUREMENTS; i++) {
     measurements[i] = analogRead(THERMISTORPIN);
     delay(10);
   }
 
   // рассчитываем среднее значение
   averageMeasurement = 0;
-  for (i = 0; i < NUMSAMPLES; i++) {
+  for (i = 0; i < COUNT_OF_MEASUREMENTS; i++) {
     averageMeasurement += measurements[i];
   }
 
-  averageMeasurement /= NUMSAMPLES;
+  averageMeasurement /= COUNT_OF_MEASUREMENTS;
 
   // конвертируем значение в сопротивление
   resistence = 1023 / averageMeasurement - 1;
