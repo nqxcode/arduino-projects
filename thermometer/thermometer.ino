@@ -12,10 +12,76 @@ int measurements[COUNT_OF_MEASUREMENTS];
 
 LiquidCrystal lcd(12, 11, 10, 5, 4, 3, 2); // инициализируем LCD
 
+byte p_rus[8] =
+{
+  B00000,
+  B00000,
+  B11111,
+  B10001,
+  B10001,
+  B10001,
+  B10001,
+  B00000,
+};
+
+byte r_rus[8] =
+{
+  B00000,
+  B00000,
+  B11111,
+  B10001,
+  B10001,
+  B11110,
+  B10000,
+  B00000,
+};
+
+byte t_rus[8] =
+{
+  B00000,
+  B00000,
+  B11111,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00000,
+};
+
+byte m_rus[8] =
+{
+  B00000,
+  B00000,
+  B11011,
+  B10101,
+  B10101,
+  B10001,
+  B10001,
+  B00000,
+};
+byte degree_symbol[8] =
+{
+  B00110,
+  B01001,
+  B01001,
+  B00110,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+};
+
 void setup(void) {
+  lcd.createChar(1, p_rus);
+  lcd.createChar(2, r_rus);
+  lcd.createChar(3, t_rus);
+  lcd.createChar(4, m_rus);
+  lcd.createChar(5, degree_symbol);
+
   lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
+
 }
 
 void loop(void) {
@@ -54,10 +120,10 @@ void loop(void) {
 
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Temperature is:");
+  lcd.print("Te\4\1e\2a\3y\2a:");
   lcd.setCursor(0, 1);
   lcd.print(temperature);
-  lcd.print(" C");
+  lcd.print(" \5C");
 
   delay(500);
 }
