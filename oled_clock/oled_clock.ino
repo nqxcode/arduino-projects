@@ -1,7 +1,14 @@
 #include <OLED_I2C.h>
 #include <iarduino_RTC.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <math.h>
 
-iarduino_RTC time(RTC_DS1302, 10, 13, 12);
+iarduino_RTC time(RTC_DS1302, 7, 9, 8);
+
+OneWire oneWire(10);
+DallasTemperature sensors(&oneWire);
+DeviceAddress insideThermometer;
 
 OLED  myOLED(SDA, SCL, 8);
 
@@ -17,8 +24,17 @@ void setup() {
   time.begin(); // time.settime(58, 50, 19, 15, 10, 17, 7);
 
   myOLED.begin();
+
+  sensors.begin();
+  sensors.getAddress(insideThermometer, 0);
+  sensors.setResolution(insideThermometer, 11);
 }
 void loop() {
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempC(insideThermometer);
+  double c;
+  String tempCString = String(int(tempC)) + "," + String(int(modf(tempC, &c) * 100)) + "  C";
+
   myOLED.clrScr();
 
   String date = time.gettime("d.m.Y");
@@ -33,26 +49,22 @@ void loop() {
 
   myOLED.setFont(MegaNumbers);
   myOLED.print(H, 4, 12);
-  //myOLED.print((char*)"/", 51, 12);
   myOLED.print(i, 75, 12);
 
   myOLED.setFont(SmallFont);
-  myOLED.print(date, CENTER, 57);
+  myOLED.print(date, LEFT, 57);
 
   myOLED.setFont(SmallFont);
   myOLED.print(s, CENTER, 30);
 
+  myOLED.setFont(SmallFont);
+  myOLED.print(tempCString, RIGHT, 57);
+
+  myOLED.setFont(SmallFont);
+  myOLED.print((char*)"o", 115, 55);
 
   myOLED.update();
-  delay(500);
-  myOLED.setFont(MegaNumbers);                     // Скрытие двоеточия
-  //myOLED.print((char*)"-", 51, 12);
-  myOLED.update();
-  delay(500);
-
-  Serial.println(time.gettime("d-m-Y, H:i:s, D"));
-  Serial.println(dayOfWeek);
-  Serial.println(time.gettime("w"));
+  delay(100);
 }
 
 String getDayOfWeek(int dayOfWeek)
