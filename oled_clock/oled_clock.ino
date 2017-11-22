@@ -1,39 +1,40 @@
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_BME280.h>
 #include <OLED_I2C.h>
 #include <iarduino_RTC.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#include <math.h>
 
 iarduino_RTC time(RTC_DS1302, 7, 9, 8);
 
-OneWire oneWire(10);
-DallasTemperature sensors(&oneWire);
-DeviceAddress insideThermometer;
-
 OLED  myOLED(SDA, SCL, 8);
+
+Adafruit_BME280 bme;
 
 extern uint8_t MegaNumbers[];
 extern uint8_t SmallFont[];
 extern uint8_t RusFont[];
 
-int i = 0;
-
 void setup() {
   delay(300);
-  Serial.begin(9600);
-  time.begin(); // time.settime(58, 50, 19, 15, 10, 17, 7);
+  time.begin();
+
+  // time.settime(00, 20, 01, 23, 11, 17, 4);
+
+  bme.begin(0x76);
+  delay(100); // let sensor boot up
 
   myOLED.begin();
 
-  sensors.begin();
-  sensors.getAddress(insideThermometer, 0);
-  sensors.setResolution(insideThermometer, 11);
 }
 void loop() {
-  sensors.requestTemperatures();
-  float tempC = sensors.getTempC(insideThermometer);
+  float temperature = bme.readTemperature();
+  float humidity = bme.readHumidity();
+  float pressure = bme.readPressure() / 133.3;
+
   double c;
-  String tempCString = String(int(tempC)) + "," + String(int(modf(tempC, &c) * 100)) + "  C";
+  String temperatureString = String(uint8_t(temperature)) + "," + String(uint8_t(modf(temperature, &c) * 10)) + "  C";
+  String humidityString = String(uint8_t(humidity)) + "%";
+  String pressureString = String(int(pressure)) + "mm";
 
   myOLED.clrScr();
 
@@ -45,23 +46,29 @@ void loop() {
   String dayOfWeek = getDayOfWeek(atoi(time.gettime("w")));
 
   myOLED.setFont(RusFont);
-  myOLED.print(dayOfWeek, CENTER, 0);
+  myOLED.print(dayOfWeek, LEFT, 0);
 
   myOLED.setFont(MegaNumbers);
   myOLED.print(H, 4, 12);
   myOLED.print(i, 75, 12);
 
   myOLED.setFont(SmallFont);
-  myOLED.print(date, LEFT, 57);
+  myOLED.print(date, RIGHT, 0);
 
   myOLED.setFont(SmallFont);
   myOLED.print(s, CENTER, 30);
 
   myOLED.setFont(SmallFont);
-  myOLED.print(tempCString, RIGHT, 57);
+  myOLED.print(temperatureString, RIGHT, 57);
 
   myOLED.setFont(SmallFont);
   myOLED.print((char*)"o", 115, 55);
+
+  myOLED.setFont(SmallFont);
+  myOLED.print(humidityString, CENTER, 57);
+
+  myOLED.setFont(SmallFont);
+  myOLED.print(pressureString, LEFT, 57);
 
   myOLED.update();
   delay(100);
