@@ -16,25 +16,24 @@ extern uint8_t RusFont[];
 
 void setup() {
   delay(300);
-  time.begin();
-
-  // time.settime(00, 20, 01, 23, 11, 17, 4);
+  time.begin(); // time.settime(00, 20, 01, 23, 11, 17, 4);
 
   bme.begin(0x76);
-  delay(100); // let sensor boot up
+  delay(100);
 
   myOLED.begin();
-
 }
+
 void loop() {
   float temperature = bme.readTemperature();
   float humidity = bme.readHumidity();
   float pressure = bme.readPressure() / 133.3;
 
   double c;
+  
   String temperatureString = String(uint8_t(temperature)) + "," + String(uint8_t(modf(temperature, &c) * 10)) + "  C";
-  String humidityString = String(uint8_t(humidity)) + "%";
-  String pressureString = String(int(pressure)) + "mm";
+  String humidityString = String(uint8_t(ceil(humidity))) + "%";
+  String pressureString = String(int(ceil(pressure))) + "mm";
 
   myOLED.clrScr();
 
