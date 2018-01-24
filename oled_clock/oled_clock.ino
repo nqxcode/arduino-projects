@@ -4,6 +4,9 @@
 #include <OLED_I2C.h>
 #include <iarduino_RTC.h>
 
+#define melodyPin 3
+#define maxTemperature 24
+
 iarduino_RTC time(RTC_DS1302, 7, 9, 8);
 
 OLED  myOLED(SDA, SCL, 8);
@@ -30,7 +33,7 @@ void loop() {
   float pressure = bme.readPressure() / 133.3;
 
   double c;
-  
+
   String temperatureString = String(uint8_t(temperature)) + "," + String(uint8_t(modf(temperature, &c) * 10)) + "  C";
   String humidityString = String(uint8_t(ceil(humidity))) + "%";
   String pressureString = String(int(ceil(pressure))) + "mm";
@@ -71,6 +74,8 @@ void loop() {
 
   myOLED.update();
   delay(100);
+
+  notifyOfHighTemperature(temperature);
 }
 
 String getDayOfWeek(int dayOfWeek)
@@ -91,5 +96,25 @@ String getDayOfWeek(int dayOfWeek)
     case 6:
       return "Ce,,jnf";
   }
+}
+
+void notifyOfHighTemperature(float temperature)
+{
+  if (temperature < maxTemperature) {
+    return;
+  }
+
+  int second = String(time.gettime("s")).toInt();
+
+  if (0 == second) {
+    for (int i; i < 3; i++) {
+      tone(melodyPin, 220, 157);
+      delay(100);
+      noTone(melodyPin);
+      delay(50);
+    }
+  }
+
+  delay(1000);
 }
 
