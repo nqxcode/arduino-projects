@@ -5,7 +5,7 @@
 #include <iarduino_RTC.h>
 
 #define melodyPin 3
-#define maxTemperature 24
+#define maxTHI 70.5 // >72 Thermal stress
 
 iarduino_RTC time(RTC_DS1302, 7, 9, 8);
 
@@ -75,7 +75,7 @@ void loop() {
   myOLED.update();
   delay(100);
 
-  notifyOfHighTemperature(temperature);
+  notifyOfHighTemperature(temperature, humidity);
 }
 
 String getDayOfWeek(int dayOfWeek)
@@ -98,9 +98,16 @@ String getDayOfWeek(int dayOfWeek)
   }
 }
 
-void notifyOfHighTemperature(float temperature)
+float getTHI(float temperature, float humidity)
 {
-  if (temperature < maxTemperature) {
+  float THI = (1.8 * temperature + 32) - ((0.55 - 0.0055 * humidity) * (1.8 * temperature - 26));
+  
+  return THI;
+}
+
+void notifyOfHighTemperature(float temperature, float humidity)
+{
+  if (getTHI(temperature, humidity) < maxTHI) {
     return;
   }
 
@@ -117,4 +124,3 @@ void notifyOfHighTemperature(float temperature)
 
   delay(1000);
 }
-
