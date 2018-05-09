@@ -1,7 +1,6 @@
 #include <Wire.h>
 #include <Adafruit_BME280.h>
 #include <LiquidCrystal_I2C.h>
-#include <LcdHistogram.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
