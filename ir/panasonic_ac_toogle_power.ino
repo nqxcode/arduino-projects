@@ -13,9 +13,9 @@ void setup()
 
 void loop() {
   turnOn();
-  delay(10000);
+  delay(2000);
   turnOff();
-  delay(5000);
+  delay(2000);
 }
 
 void turnOn() {
