@@ -4,12 +4,13 @@
 #include <IRremote.h>
 #include <avr/pgmspace.h>
 
-#define minTHI 70.6
-#define maxTHI 71.3
+#define minTHI 70.5
+#define maxTHI 70.9
 
 Adafruit_BME280 bme;
 
 int AcOnState = 0;
+int AcPowerState = 0;
 
 IRsend irsend;
 int khz = 38;
@@ -32,7 +33,6 @@ void loop() {
   float humidity = bme.readHumidity();
   float pressure = bme.readPressure() / 133.3;
 
-  delay(5000);
   toggleAcPower(temperature, humidity);
   delay(1000);
 }
@@ -60,7 +60,6 @@ void toggleAcPower(float temperature, float humidity)
     delay(10000);
 
     turnPowerAC();
-    delay(1000);
     return;
   }
 }
@@ -91,12 +90,13 @@ void turnOffAC() {
 
     irsend.sendRaw(buffer, size, khz);
     AcOnState = 0;
+    AcPowerState = 0;
     Serial.println("off");
   }
 }
 
 void turnPowerAC() {
-  if (AcOnState) {
+  if (AcPowerState == 0) {
     int size = sizeof(signal_power) / sizeof(int);
     unsigned int buffer[size];
 
@@ -105,12 +105,13 @@ void turnPowerAC() {
     }
 
     irsend.sendRaw(buffer, size, khz);
+    AcPowerState = 1;
     Serial.println("power");
   }
 }
 
 void turnQuietAC() {
-  if (AcOnState) {
+  if (AcPowerState) {
     int size = sizeof(signal_quiet) / sizeof(int);
     unsigned int buffer[size];
 
@@ -119,7 +120,7 @@ void turnQuietAC() {
     }
 
     irsend.sendRaw(buffer, size, khz);
-
+    AcPowerState = 0;
     Serial.println("quiet");
   }
 }
