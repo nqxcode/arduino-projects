@@ -4,8 +4,8 @@
 #include <IRremote.h>
 #include <avr/pgmspace.h>
 
-#define minTHI 70.8
-#define maxTHI 71.5
+#define minTHI 70.6
+#define maxTHI 71.3
 
 Adafruit_BME280 bme;
 
