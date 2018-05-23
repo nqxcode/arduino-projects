@@ -11,7 +11,7 @@ void setup() {
   bme.begin(0x76);
 
   delay(100);
-  lcd.init();
+  lcd.begin();
   lcd.backlight();
 }
 
@@ -22,20 +22,18 @@ void loop() {
 
   double c;
 
-  String temperatureString = String(uint8_t(temperature)) + "," + String(uint8_t(modf(temperature, &c) * 10)) + " " + String((char)223) + "C";
+  String temperatureString = String(uint8_t(temperature)) + "," + String(uint8_t(modf(temperature, &c) * 10)) + "" + String((char)223) + "C";
   String humidityString = String(uint8_t(ceil(humidity))) + "%";
   String pressureString = String(int(ceil(pressure))) + "mm";
 
   lcd.setCursor(0, 0);
   lcd.print(temperatureString);
 
-  lcd.setCursor(12, 0);
+  lcd.setCursor(13, 0);
   lcd.print(humidityString);
 
-  lcd.setCursor(6, 1);
+  lcd.setCursor(7, 1);
   lcd.print(pressureString);
 
   delay(500);
 }
-
-
