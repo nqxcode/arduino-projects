@@ -2,7 +2,7 @@
 #include <Adafruit_BME280.h>
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x3F, 16, 2); // or lcd(0x27, 16, 2);
 
 Adafruit_BME280 bme;
 
