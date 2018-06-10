@@ -11,7 +11,7 @@ void setup() {
   bme.begin(0x76);
 
   delay(100);
-  lcd.begin();
+  lcd.begin(16, 2);
   lcd.backlight();
 }
 
