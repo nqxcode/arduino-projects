@@ -25,13 +25,16 @@ void setup() {
 
 void loop() {
   float temperature = bme.readTemperature();
+
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
   
-  toggleAcPower(temperature, humidity);
+  toggleAcPower(temperature);
 
   delay(1000);
 }
 
-void toggleAcPower(float temperature, float humidity)
+void toggleAcPower(float temperature)
 {
   if (temperature <= minTemperature) {
     if (AC_ON == true) {
@@ -73,3 +76,4 @@ void turnOffAC() {
   irsend.sendRaw(buffer, size, khz);
   Serial.println("OFF AC");
 }
+
