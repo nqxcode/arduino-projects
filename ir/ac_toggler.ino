@@ -8,6 +8,7 @@
 #define maxTemperature 25.0 // Thermal stress, AC turn on
 
 bool AC_ON = false;
+bool AC_OFF = false;
 
 Adafruit_BME280 bme;
 
@@ -31,14 +32,15 @@ void loop() {
   
   toggleAcPower(temperature);
 
-  delay(1000);
+  delay(5000);
 }
 
 void toggleAcPower(float temperature)
 {
   if (temperature <= minTemperature) {
-    if (AC_ON == true) {
+    if (AC_OFF == false) {
       turnOffAC();
+      AC_OFF = true;      
       AC_ON = false;
       return;
     }
@@ -48,6 +50,7 @@ void toggleAcPower(float temperature)
     if (AC_ON == false) {
       turnOnAC();
       AC_ON = true;
+      AC_OFF = false;
       return;
     }
   }
