@@ -7,12 +7,7 @@
 #define minTemperature 24.0 // case when AC turn off
 #define maxTemperature 25.0 // Thermal stress, AC turn on
 
-#define measurement_count 120
-
-int mustBeTurnedOn = 0;
-int counter = 0;
-
-float prevTemperatures[measurement_count];
+bool AC_ON = false;
 
 Adafruit_BME280 bme;
 
@@ -30,41 +25,26 @@ void setup() {
 
 void loop() {
   float temperature = bme.readTemperature();
-  float humidity = bme.readHumidity();
-  float pressure = bme.readPressure() / 133.3;
-
-  counter = counter % measurement_count;
-  prevTemperatures[counter] = temperature;
-
-  if (counter == measurement_count - 1) {
-    toggleAcPower(temperature, humidity);
-  }
-
-  Serial.println(counter);
-
-  Serial.print("Temperature: ");
-  Serial.println(temperature);
-
-  Serial.print("Avg temperature: ");
-  Serial.println(avgTemperature());
+  
+  toggleAcPower(temperature, humidity);
 
   delay(1000);
-  counter++;
-
 }
 
 void toggleAcPower(float temperature, float humidity)
 {
   if (temperature <= minTemperature) {
-    if (temperature <= avgTemperature()) {
+    if (AC_ON == true) {
       turnOffAC();
+      AC_ON = false;
       return;
     }
   }
 
   if (temperature >= maxTemperature) {
-    if (temperature >= avgTemperature()) {
+    if (AC_ON == false) {
       turnOnAC();
+      AC_ON = true;
       return;
     }
   }
@@ -92,22 +72,4 @@ void turnOffAC() {
 
   irsend.sendRaw(buffer, size, khz);
   Serial.println("OFF AC");
-}
-
-float avgTemperature()
-{
-  float avgTemperature = 0;
-  int count = 0;
-  for (int i = 0; i < measurement_count; i++) {
-    if (prevTemperatures[i] != 0) {
-      avgTemperature += prevTemperatures[i];
-      count++;
-    }
-  }
-
-  if (count > 0) {
-    avgTemperature = avgTemperature / count;
-  }
-  
-  return avgTemperature;
 }
