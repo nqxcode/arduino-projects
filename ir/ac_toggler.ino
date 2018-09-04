@@ -56,14 +56,14 @@ void loop() {
 void toggleAcPower(float temperature, float humidity)
 {
   if (temperature <= minTemperature) {
-    if (temperature < avgTemperature()) {
+    if (temperature <= avgTemperature()) {
       turnOffAC();
       return;
     }
   }
 
   if (temperature >= maxTemperature) {
-    if (temperature > avgTemperature()) {
+    if (temperature >= avgTemperature()) {
       turnOnAC();
       return;
     }
