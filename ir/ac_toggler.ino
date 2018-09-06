@@ -8,6 +8,9 @@
 #define minTemperature 25.65 // case when AC turn off
 #define maxTemperature 25.95 // Thermal stress, AC turn on
 
+#define AC_ON_HOUR 9 // AC turn on hour
+#define AC_OFF_HOUR 18 // AC turn off hour
+
 bool AC_ON = false;
 bool AC_OFF = false;
 
@@ -39,7 +42,7 @@ void setup() {
   bme.begin(0x76);
   delay(100);
 
-  time.begin();  //time.settime(00, 49, 23, 6, 9, 18, 4);
+  time.begin();  //time.settime(20, 25, 00, 7, 9, 18, 4);
   delay(100);
 
   Serial.begin(9600);
@@ -47,11 +50,7 @@ void setup() {
 
 void loop() {
   float temperature = bme.readTemperature();
-
-  String date = time.gettime("d.m.Y");
-  String H = time.gettime("H");
-  String i = time.gettime("i");
-  String s = time.gettime("s");
+  unsigned int hour = String(time.gettime("H")).toInt();
 
   Serial.println("--------");
   Serial.print("Temperature: ");
@@ -59,15 +58,20 @@ void loop() {
   Serial.print("Mode temperature: ");
   Serial.println(getTemperatureOfMode());
   Serial.print("Time: ");
-  Serial.println(date + " " + H + ":" + i + ":" + s);
+  Serial.println(time.gettime("H:i:s Y.m.d"));
 
-  unsigned int expectedMode = getMode();
+  if (hour >= AC_ON_HOUR && hour < AC_OFF_HOUR) {
+    unsigned int expectedMode = getMode();
 
-  if (expectedMode != mode) {
-    setMode(expectedMode);
+    if (expectedMode != mode) {
+      setMode(expectedMode);
+
+    } else {
+      toggleAcPower(temperature);
+    }
 
   } else {
-    toggleAcPower(temperature);
+    turnOffAC();
   }
 
   delay(1000);
@@ -76,21 +80,11 @@ void loop() {
 void toggleAcPower(float temperature)
 {
   if (temperature <= minTemperature) {
-    if (AC_OFF == false) {
-      turnOffAC();
-      AC_OFF = true;
-      AC_ON = false;
-      return;
-    }
+    turnOffAC();
   }
 
   if (temperature >= maxTemperature) {
-    if (AC_ON == false) {
-      turnOnAC(mode);
-      AC_ON = true;
-      AC_OFF = false;
-      return;
-    }
+    turnOnAC(mode);
   }
 }
 
@@ -100,27 +94,37 @@ void turnOnAC(unsigned int mode) {
     return;
   }
 
-  int size = sizeof(Signals_TURN_ON[mode]) / sizeof(int);
-  unsigned int buffer[size];
+  if (AC_ON == false) {
+    AC_ON = true;
+    AC_OFF = false;
 
-  for (int i = 0; i < size; i++) {
-    buffer[i] = pgm_read_dword(&Signals_TURN_ON[mode][i]);
+    int size = sizeof(Signals_TURN_ON[mode]) / sizeof(int);
+    unsigned int buffer[size];
+
+    for (int i = 0; i < size; i++) {
+      buffer[i] = pgm_read_dword(&Signals_TURN_ON[mode][i]);
+    }
+
+    irsend.sendRaw(buffer, size, khz);
+    Serial.println("ON AC");
   }
-
-  irsend.sendRaw(buffer, size, khz);
-  Serial.println("ON AC");
 }
 
 void turnOffAC() {
-  int size = sizeof(Signals_TURN_OFF) / sizeof(int);
-  unsigned int buffer[size];
+  if (AC_OFF == false) {
+    AC_OFF = true;
+    AC_ON = false;
 
-  for (int i = 0; i < size; i++) {
-    buffer[i] = pgm_read_dword(&Signals_TURN_OFF[i]);
+    int size = sizeof(Signals_TURN_OFF) / sizeof(int);
+    unsigned int buffer[size];
+
+    for (int i = 0; i < size; i++) {
+      buffer[i] = pgm_read_dword(&Signals_TURN_OFF[i]);
+    }
+
+    irsend.sendRaw(buffer, size, khz);
+    Serial.println("OFF AC");
   }
-
-  irsend.sendRaw(buffer, size, khz);
-  Serial.println("OFF AC");
 }
 
 unsigned int getMode()
