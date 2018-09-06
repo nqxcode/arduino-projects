@@ -4,8 +4,8 @@
 #include <IRremote.h>
 #include <avr/pgmspace.h>
 
-#define minTemperature 24.0 // case when AC turn off
-#define maxTemperature 24.5 // Thermal stress, AC turn on
+#define minTemperature 25.2 // case when AC turn off
+#define maxTemperature 25.5 // Thermal stress, AC turn on
 
 bool AC_ON = false;
 bool AC_OFF = false;
