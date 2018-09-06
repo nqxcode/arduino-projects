@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <SPI.h>
+#include <iarduino_RTC.h>
 #include <Adafruit_BME280.h>
 #include <IRremote.h>
 #include <avr/pgmspace.h>
@@ -13,6 +14,7 @@ bool AC_OFF = false;
 int modeAnalogPin = 3;
 
 Adafruit_BME280 bme;
+iarduino_RTC time(RTC_DS1302, 7, 9, 8); // RST, CLK, DAT
 
 IRsend irsend;
 int khz = 38;
@@ -37,17 +39,27 @@ void setup() {
   bme.begin(0x76);
   delay(100);
 
+  time.begin();  //time.settime(00, 49, 23, 6, 9, 18, 4);
+  delay(100);
+
   Serial.begin(9600);
 }
 
 void loop() {
   float temperature = bme.readTemperature();
 
+  String date = time.gettime("d.m.Y");
+  String H = time.gettime("H");
+  String i = time.gettime("i");
+  String s = time.gettime("s");
+
   Serial.println("--------");
   Serial.print("Temperature: ");
   Serial.println(temperature);
   Serial.print("Mode temperature: ");
   Serial.println(getTemperatureOfMode());
+  Serial.print("Time: ");
+  Serial.println(date + " " + H + ":" + i + ":" + s);
 
   unsigned int expectedMode = getMode();
 
@@ -129,5 +141,3 @@ unsigned int getTemperatureOfMode()
 {
   return maxModeTemperature - mode;
 }
-
-
