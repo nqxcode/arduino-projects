@@ -17,7 +17,7 @@ bool AC_OFF = false;
 int modeAnalogPin = 3;
 
 Adafruit_BME280 bme;
-iarduino_RTC time(RTC_DS1302, 7, 9, 8); // RST, CLK, DAT
+iarduino_RTC time(RTC_DS1302, 6, 7, 7); // RST, CLK, DAT
 
 IRsend irsend;
 int khz = 38;
