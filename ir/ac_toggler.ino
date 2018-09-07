@@ -5,7 +5,7 @@
 #include <IRremote.h>
 #include <avr/pgmspace.h>
 
-#define minTemperature 25.65 // case when AC turn off
+#define minTemperature 25.75 // case when AC turn off
 #define maxTemperature 25.95 // Thermal stress, AC turn on
 
 #define AC_ON_HOUR 9 // AC turn on hour
@@ -137,8 +137,22 @@ unsigned int getMode()
 
 void setMode(unsigned int value)
 {
+  if (value > maxMode) {
+    Serial.println("Set AC mode: incorrect mode");
+    return;
+  }
+
   mode = value;
-  turnOnAC(mode);
+
+  int size = sizeof(Signals_TURN_ON[mode]) / sizeof(int);
+  unsigned int buffer[size];
+
+  for (int i = 0; i < size; i++) {
+    buffer[i] = pgm_read_dword(&Signals_TURN_ON[mode][i]);
+  }
+
+  irsend.sendRaw(buffer, size, khz);
+  Serial.println("SET MODE AC");
 }
 
 unsigned int getTemperatureOfMode()
