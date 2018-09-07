@@ -17,7 +17,7 @@ bool AC_OFF = false;
 int modeAnalogPin = 3;
 
 Adafruit_BME280 bme;
-iarduino_RTC time(RTC_DS1302, 6, 7, 8); // RST, CLK, DAT
+iarduino_RTC time(RTC_DS1302, 7, 9, 8); // RST, CLK, DAT
 
 IRsend irsend;
 int khz = 38;
@@ -40,9 +40,9 @@ float maxModeTemperature = 24;
 
 void setup() {
   bme.begin(0x76);
-  delay(100);
+  delay(300);
 
-  time.begin();  //time.settime(20, 25, 00, 7, 9, 18, 4);
+  time.begin();  //time.settime(00, 25, 14, 7, 9, 18, 5);
   delay(100);
 
   Serial.begin(9600);
