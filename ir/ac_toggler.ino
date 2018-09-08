@@ -8,8 +8,11 @@
 #define minTemperature 25.75 // case when AC turn off
 #define maxTemperature 25.95 // Thermal stress, AC turn on
 
-#define AC_ON_HOUR 9 // AC turn on hour
-#define AC_OFF_HOUR 18 // AC turn off hour
+#define AC_ON_HOURS 8 // AC turn on hours
+#define AC_ON_MINUTES 45 // AC turn on minutes
+#define AC_OFF_HOUR 18 // AC turn off hours
+#define AC_OFF_WEEKDAY_1 0 // AC turn off weekday
+#define AC_OFF_WEEKDAY_2 6 // AC turn off weekday
 
 bool AC_ON = false;
 bool AC_OFF = false;
@@ -34,7 +37,7 @@ const unsigned int Signals_TURN_ON[6][439] PROGMEM = {
 
 const unsigned int Signals_TURN_OFF[] PROGMEM = {3548, 1688, 492, 380, 440, 1300, 444, 428, 496, 376, 444, 432, 440, 428, 444, 428, 444, 428, 496, 380, 492, 380, 440, 432, 440, 432, 440, 428, 444, 1304, 492, 380, 492, 376, 440, 432, 440, 432, 496, 376, 440, 432, 440, 432, 440, 1304, 492, 1252, 496, 1252, 436, 432, 496, 376, 440, 1304, 440, 432, 440, 432, 492, 380, 492, 380, 492, 380, 440, 432, 440, 460, 412, 432, 440, 432, 492, 380, 440, 432, 440, 432, 440, 432, 444, 428, 440, 432, 440, 432, 492, 380, 440, 432, 492, 380, 492, 380, 440, 432, 440, 432, 440, 432, 492, 380, 492, 380, 492, 380, 492, 380, 440, 432, 440, 432, 440, 432, 440, 1300, 444, 1300, 444, 432, 440, 432, 440, 432, 440, 428, 476, 400, 440, 10024, 3544, 1688, 440, 432, 440, 1304, 440, 432, 492, 380, 492, 408, 464, 384, 488, 376, 444, 456, 416, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 1300, 444, 432, 492, 380, 492, 376, 444, 432, 492, 380, 492, 376, 444, 432, 440, 1300, 484, 1260, 496, 1248, 496, 376, 444, 432, 436, 1308, 436, 432, 492, 380, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 496, 376, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 1304, 440, 1304, 440, 1304, 440, 1304, 492, 380, 492, 380, 440, 432, 440, 432, 440, 432, 440, 432, 492, 1252, 492, 1252, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 492, 380, 492, 1252, 440, 1300, 496, 380, 492, 380, 440, 428, 444, 1304, 440, 1304, 492, 1248, 444, 432, 440, 432, 440, 1300, 496, 1248, 492, 380, 444, 428, 440, 436, 488, 380, 496, 376, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 436, 488, 1252, 440, 1304, 440, 1304, 440, 432, 492, 380, 440, 432, 496, 380, 496, 372, 492, 380, 492, 380, 440, 432, 440, 432, 492, 1252, 440, 1304, 440, 1304, 440, 432, 440, 432, 440, 432, 492, 380, 492, 380, 492, 380, 440, 432, 440, 432, 440, 432, 468, 404, 492, 380, 440, 432, 440, 432, 440, 432, 440, 432, 440, 432, 440, 1304, 440, 432, 440, 432, 440, 432, 464, 404, 496, 380, 440, 432, 492, 1252, 492, 376, 444, 428, 444, 432, 440, 432, 440, 428, 496, 376, 496, 376, 444, 432, 440, 432, 440, 432, 488, 380, 496, 380, 492, 376, 496, 376, 440, 432, 440, 432, 492, 380, 440, 436, 436, 432, 492, 1252, 444, 1300, 440, 432, 440, 1304, 440, 1304, 440};
 
-unsigned int mode = 2; // 22 °C
+unsigned int mode = 3; // 23 °C
 unsigned int maxMode = 5; // 19 °C
 float maxModeTemperature = 24;
 
@@ -50,7 +53,6 @@ void setup() {
 
 void loop() {
   float temperature = bme.readTemperature();
-  unsigned int hour = String(time.gettime("H")).toInt();
 
   Serial.println("--------");
   Serial.print("Temperature: ");
@@ -60,7 +62,7 @@ void loop() {
   Serial.print("Time: ");
   Serial.println(time.gettime("H:i:s Y.m.d"));
 
-  if (hour >= AC_ON_HOUR && hour < AC_OFF_HOUR) {
+  if (checkOnTime(time.Hours, time.minutes, time.weekday)) {
     unsigned int expectedMode = getMode();
 
     if (expectedMode != mode) {
@@ -152,10 +154,38 @@ void setMode(unsigned int value)
   }
 
   irsend.sendRaw(buffer, size, khz);
-  Serial.println("SET MODE AC");
+  Serial.println("SET AC MODE");
 }
 
 unsigned int getTemperatureOfMode()
 {
   return maxModeTemperature - mode;
+}
+
+bool checkOnTime(unsigned int hour, unsigned int minute, unsigned int weekday)
+{
+  bool onState = false;
+
+  if (weekday == AC_OFF_WEEKDAY_1 || weekday == AC_OFF_WEEKDAY_2) {
+    onState = false;
+
+  } else  if (hour == AC_ON_HOURS && minute >= AC_ON_MINUTES) {
+    onState = true;
+
+  } else if (hour > AC_ON_HOURS && hour < AC_OFF_HOUR) {
+
+    onState = true;
+
+  } else {
+    onState = false;
+  }
+
+  if (onState) {
+    Serial.println("ON TIME");
+
+  } else {
+    Serial.println("OFF TIME");
+  }
+
+  return onState;
 }
