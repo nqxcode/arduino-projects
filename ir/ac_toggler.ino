@@ -143,6 +143,9 @@ void setMode(unsigned int value)
     Serial.println("Set AC mode: incorrect mode");
     return;
   }
+  
+  AC_ON = true;
+  AC_OFF = false;
 
   mode = value;
 
