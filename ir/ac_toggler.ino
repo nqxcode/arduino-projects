@@ -10,7 +10,7 @@
 
 #define AC_ON_HOURS 8 // AC turn on hours
 #define AC_ON_MINUTES 45 // AC turn on minutes
-#define AC_OFF_HOUR 18 // AC turn off hours
+#define AC_OFF_HOURS 18 // AC turn off hours
 #define AC_OFF_WEEKDAY_1 0 // AC turn off weekday
 #define AC_OFF_WEEKDAY_2 6 // AC turn off weekday
 
@@ -172,7 +172,7 @@ bool checkOnTime(unsigned int hour, unsigned int minute, unsigned int weekday)
   } else  if (hour == AC_ON_HOURS && minute >= AC_ON_MINUTES) {
     onState = true;
 
-  } else if (hour > AC_ON_HOURS && hour < AC_OFF_HOUR) {
+  } else if (hour > AC_ON_HOURS && hour < AC_OFF_HOURS) {
 
     onState = true;
 
