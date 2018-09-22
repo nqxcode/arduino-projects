@@ -55,6 +55,13 @@ void execute(String commandString)
   } else if (commandString == "wait") {
     crawler.wait();
 
+  } else if (commandString.startsWith("speed")) {
+    unsigned int _speed = commandString.substring(6).toInt();
+    
+    _speed = map(_speed, 0, 1023, 200, 250);
+    
+    crawler.speed(_speed);
+
   } else {
     Serial.println("Incorrect command!");
   }
