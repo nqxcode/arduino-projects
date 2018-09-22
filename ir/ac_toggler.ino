@@ -167,28 +167,28 @@ unsigned int getTemperatureOfMode()
 
 bool checkOnTime(unsigned int hour, unsigned int minute, unsigned int weekday)
 {
-  bool onState = false;
+  bool onTime = false;
 
   if (weekday == AC_OFF_WEEKDAY_1 || weekday == AC_OFF_WEEKDAY_2) {
-    onState = false;
+    onTime = false;
 
   } else  if (hour == AC_ON_HOURS && minute >= AC_ON_MINUTES) {
-    onState = true;
+    onTime = true;
 
   } else if (hour > AC_ON_HOURS && hour < AC_OFF_HOURS) {
 
-    onState = true;
+    onTime = true;
 
   } else {
-    onState = false;
+    onTime = false;
   }
 
-  if (onState) {
+  if (onTime) {
     Serial.println("ON TIME");
 
   } else {
     Serial.println("OFF TIME");
   }
 
-  return onState;
+  return onTime;
 }
