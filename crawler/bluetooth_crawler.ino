@@ -8,8 +8,6 @@ SoftwareSerial BTserial(2, 3); // RX | TX
 
 Crawler crawler(10, 12, 11, 13); // E1, M1, E2, M2
 
-String commandString = "";
-
 void setup()
 {
   Serial.begin(9600);
@@ -21,6 +19,8 @@ void setup()
 
 void loop()
 {
+  String commandString = "";
+  
   // Keep reading from HC-06 and send to Arduino Serial Monitor
   while (BTserial.available())
   {
@@ -55,10 +55,8 @@ void execute(String commandString)
   } else if (commandString == "wait") {
     crawler.wait();
 
-  } else if (commandString.startsWith("speed")) {
+  } else if (commandString.startsWith("speed:")) {
     unsigned int _speed = commandString.substring(6).toInt();
-    
-    _speed = map(_speed, 0, 1023, 200, 250);
     
     crawler.speed(_speed);
 
