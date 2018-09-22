@@ -5,7 +5,9 @@
 #include "crawler.h"
 #include <Arduino.h>
 
-Crawler::Crawler() {
+Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2)
+  : E1(e1), M1(m1), E2(e2), M2(m2) {
+
 }
 
 void Crawler::debug(char* message)
@@ -17,9 +19,6 @@ void Crawler::debug(char* message)
 void Crawler::begin(void) {
   pinMode(M1, OUTPUT);
   pinMode(M2, OUTPUT);
-
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
 }
 
 void Crawler::go(void)
@@ -44,13 +43,15 @@ void Crawler::back(void)
 
 void Crawler::rotate(int direction)
 {
-  this->debug("rotate");
-
   if (direction == 1) {
+    this->debug("rotate left");
+
     digitalWrite(M1, LOW);
     digitalWrite(M2, LOW);
 
   } else {
+    this->debug("rotate right");
+
     digitalWrite(M1, HIGH);
     digitalWrite(M2, HIGH);
   }

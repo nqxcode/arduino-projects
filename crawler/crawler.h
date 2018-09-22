@@ -2,7 +2,7 @@
 
 class Crawler {
   public:
-    Crawler();
+    Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2);
     void begin();
     void go();
     void back();
@@ -12,11 +12,8 @@ class Crawler {
     void debug(char* message);
 
   private:
-    int E1 = 10;
-    int M1 = 12;
-    int E2 = 11;
-    int M2 = 13;
-
-    int echoPin = 9;
-    int trigPin = 8;
+    int E1;
+    int M1;
+    int E2;
+    int M2;
 };
