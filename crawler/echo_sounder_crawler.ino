@@ -66,7 +66,6 @@ void setup()
 
 void loop()
 {
-  int waitFirst = true;
   int direction = 0;
   
   while (true) {
