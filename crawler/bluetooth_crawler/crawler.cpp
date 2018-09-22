@@ -2,18 +2,12 @@
   This is a library for crawler
  ****************************************************/
 
-#include "crawler.h"
 #include <Arduino.h>
+#include "crawler.h"
 
-Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2)
-  : E1(e1), M1(m1), E2(e2), M2(m2) {
+Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2, unsigned int _speed = 200)
+  : E1(e1), M1(m1), E2(e2), M2(m2), _speed(_speed) {
 
-}
-
-void Crawler::debug(char* message)
-{
-  Serial.print("[Crawler debug mode]: ");
-  Serial.println(message);
 }
 
 void Crawler::begin(void) {
@@ -21,49 +15,64 @@ void Crawler::begin(void) {
   pinMode(M2, OUTPUT);
 }
 
-void Crawler::go(void)
+void Crawler::debug(String message)
 {
-  this->debug("go");
-
-  digitalWrite(M1, HIGH);
-  digitalWrite(M2, LOW);
-  analogWrite(E1, 255);
-  analogWrite(E2, 255);
+  Serial.print("[Crawler debug mode]: ");
+  Serial.println(message);
 }
 
-void Crawler::back(void)
+void Crawler::run(Crawler::Direction direction)
 {
-  this->debug("back");
+  switch (direction) {
+    case Crawler::Direction::forward:
+      this->debug("forward");
 
-  digitalWrite(M1, LOW);
-  digitalWrite(M2, HIGH);
-  analogWrite(E1, 200);
-  analogWrite(E2, 200);
-}
+      digitalWrite(M1, HIGH);
+      digitalWrite(M2, LOW);
+      break;
 
-void Crawler::rotate(int direction)
-{
-  if (direction == 1) {
-    this->debug("rotate left");
+    case Crawler::Direction::backward:
+      this->debug("backward");
 
-    digitalWrite(M1, LOW);
-    digitalWrite(M2, LOW);
+      digitalWrite(M1, LOW);
+      digitalWrite(M2, HIGH);
+      break;
 
-  } else {
-    this->debug("rotate right");
+    case Crawler::Direction::left:
+      this->debug("left rotation");
 
-    digitalWrite(M1, HIGH);
-    digitalWrite(M2, HIGH);
+      digitalWrite(M1, LOW);
+      digitalWrite(M2, LOW);
+      break;
+
+    case Crawler::Direction::right:
+      this->debug("right rotation");
+
+      digitalWrite(M1, HIGH);
+      digitalWrite(M2, HIGH);
+      break;
+
+    default:
+      this->debug("rotate incorrect direction");
+      return;
   }
 
-  analogWrite(E1, 200);
-  analogWrite(E2, 200);
+  analogWrite(E1, this->_speed);
+  analogWrite(E2, this->_speed);
 }
 
-void Crawler::wait(void)
+void Crawler::stop(void)
 {
-  this->debug("wait");
+  this->debug("stop");
 
   analogWrite(E1, 0);
   analogWrite(E2, 0);
 }
+
+void Crawler::speed(unsigned int _speed)
+{
+  this->debug(String("speed: ") + String(_speed));
+
+  this->_speed = _speed;
+}
+

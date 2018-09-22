@@ -1,7 +1,6 @@
 #include <SoftwareSerial.h>
 #include "crawler.h"
 
-
 // Connect the HC-06 TX to the Arduino RX on pin 2.
 // Connect the HC-06 RX to the Arduino TX on pin 3 through a voltage divider.
 SoftwareSerial BTserial(2, 3); // RX | TX
@@ -13,20 +12,19 @@ void setup()
   Serial.begin(9600);
   BTserial.begin(9600);
   crawler.begin();
-
-  commandString.reserve(200);
 }
 
 void loop()
 {
   String commandString = "";
+  commandString.reserve(200);
   
   // Keep reading from HC-06 and send to Arduino Serial Monitor
   while (BTserial.available())
   {
     char c = BTserial.read();
 
-    if (c != ';') {
+    if (c != ';') { // TODO change delimiter to \n or \r
       commandString += c;
       continue;
     }
@@ -37,27 +35,24 @@ void loop()
 
 void execute(String commandString)
 {
-  Serial.print("Input command: ");
-  Serial.println(commandString);
-
   if (commandString == "right") {
-    crawler.rotate(0);
+    crawler.run(Crawler::Direction::right);
 
   } else if (commandString == "left") {
-    crawler.rotate(1);
+    crawler.run(Crawler::Direction::left);
 
   } else if (commandString == "go") {
-    crawler.go();
+    crawler.run(Crawler::Direction::forward);
 
   } else if (commandString == "back") {
-    crawler.back();
+    crawler.run(Crawler::Direction::backward);
 
   } else if (commandString == "wait") {
-    crawler.wait();
+    crawler.stop();
 
   } else if (commandString.startsWith("speed:")) {
     unsigned int _speed = commandString.substring(6).toInt();
-    
+
     crawler.speed(_speed);
 
   } else {
