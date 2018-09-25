@@ -7,7 +7,7 @@ class Crawler {
       forward, backward, right, left
     };
 
-    Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2, unsigned int _speed = 200);
+    Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2, unsigned int _speed = 150`);
     void begin();
     void debug(String message);
 
@@ -21,4 +21,6 @@ class Crawler {
     unsigned int E2;
     unsigned int M2;
     unsigned int _speed;
+    bool started = false;
+
 };

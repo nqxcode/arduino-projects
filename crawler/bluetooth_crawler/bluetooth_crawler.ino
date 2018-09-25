@@ -7,18 +7,18 @@ SoftwareSerial BTserial(2, 3); // RX | TX
 
 Crawler crawler(10, 12, 11, 13); // E1, M1, E2, M2
 
+String commandString = "";
+
 void setup()
 {
   Serial.begin(9600);
   BTserial.begin(9600);
   crawler.begin();
+  commandString.reserve(200);
 }
 
 void loop()
 {
-  String commandString = "";
-  commandString.reserve(200);
-  
   // Keep reading from HC-06 and send to Arduino Serial Monitor
   while (BTserial.available())
   {
@@ -41,13 +41,13 @@ void execute(String commandString)
   } else if (commandString == "left") {
     crawler.run(Crawler::Direction::left);
 
-  } else if (commandString == "go") {
+  } else if (commandString == "forward") {
     crawler.run(Crawler::Direction::forward);
 
-  } else if (commandString == "back") {
+  } else if (commandString == "backward") {
     crawler.run(Crawler::Direction::backward);
 
-  } else if (commandString == "wait") {
+  } else if (commandString == "stop") {
     crawler.stop();
 
   } else if (commandString.startsWith("speed:")) {
