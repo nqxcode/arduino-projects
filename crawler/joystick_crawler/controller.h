@@ -10,6 +10,6 @@ class Controller {
 
   private:
     Crawler::Direction direction;
-    unsigned int leftSpeed;
-    unsigned int rightSpeed;
+    int leftSpeed;
+    int rightSpeed;
 };

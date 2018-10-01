@@ -16,8 +16,10 @@ void Crawler::begin(void) {
 
 void Crawler::debug(String message)
 {
-  Serial.print("[Crawler debug mode]: ");
-  Serial.println(message);
+  if (this->_debug) {
+    Serial.print("[Crawler debug mode]: ");
+    Serial.println(message);
+  }
 }
 
 void Crawler::run(Crawler::Direction direction)
@@ -41,9 +43,8 @@ void Crawler::run(Crawler::Direction direction)
       this->debug("Incorrect direction");
       return;
   }
-
-  analogWrite(E1, this->rightSpeed);
-  analogWrite(E2, this->leftSpeed);
+  
+  this->refreshSpeed();
 }
 
 void Crawler::speed(unsigned int leftSpeed, unsigned int rightSpeed)
@@ -54,6 +55,12 @@ void Crawler::speed(unsigned int leftSpeed, unsigned int rightSpeed)
   this->leftSpeed = leftSpeed;
   this->rightSpeed = rightSpeed;
 
-  analogWrite(E1, this->rightSpeed);
-  analogWrite(E2, this->leftSpeed);
+  this->refreshSpeed();
 }
+
+void Crawler::refreshSpeed(void)
+{
+  analogWrite(E2, this->rightSpeed);
+  analogWrite(E1, this->leftSpeed);
+}
+
