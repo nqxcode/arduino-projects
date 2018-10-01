@@ -18,7 +18,7 @@ void Controller::setAxes(unsigned int xAxis, unsigned int yAxis) {
     // Convert the declining Y-axis readings for going backward from 470 to 0 into 0 to 255 value for the PWM signal for increasing the motor speed
     this->leftSpeed = map(yAxis, 470, 0, 0, 255);
     this->rightSpeed = map(yAxis, 470, 0, 0, 255);
-    
+
   }
   else if (yAxis > 550) {
     // Set motors forward
@@ -27,7 +27,7 @@ void Controller::setAxes(unsigned int xAxis, unsigned int yAxis) {
     // Convert the increasing Y-axis readings for going forward from 550 to 1023 into 0 to 255 value for the PWM signal for increasing the motor speed
     this->leftSpeed = map(yAxis, 550, 1023, 0, 255);
     this->rightSpeed = map(yAxis, 550, 1023, 0, 255);
-    
+
   }
   // If joystick stays in middle the motors are not moving
   else {

@@ -39,11 +39,25 @@ void Crawler::run(Crawler::Direction direction)
       digitalWrite(M2, HIGH);
       break;
 
+    case Crawler::Direction::left_rotation:
+      this->debug("left rotation");
+
+      digitalWrite(M1, LOW);
+      digitalWrite(M2, LOW);
+      break;
+
+    case Crawler::Direction::right_rotation:
+      this->debug("right rotation");
+
+      digitalWrite(M1, HIGH);
+      digitalWrite(M2, HIGH);
+      break;
+
     default:
       this->debug("Incorrect direction");
       return;
   }
-  
+
   this->refreshSpeed();
 }
 

@@ -6,19 +6,18 @@ SoftwareSerial BTserial(2, 3); // RX | TX
 Crawler crawler(10, 12, 11, 13); // E1, M1, E2, M2
 Controller controller;
 
-String commandString = "";
+
+unsigned int xAxis = 512;
+unsigned int yAxis = 512;
+String command = "";
 
 void setup()
 {
   Serial.begin(9600);
   BTserial.begin(9600);
   crawler.begin();
-  commandString.reserve(200);
+  command.reserve(200);
 }
-
-
-unsigned int xAxis = 512;
-unsigned int yAxis = 512;
 
 void loop()
 {
@@ -27,25 +26,25 @@ void loop()
     char c = BTserial.read();
 
     if (c != '\n') {
-      commandString += c;
+      command += c;
       continue;
     }
 
-    if (commandString.startsWith("S")) {
-      yAxis = commandString.substring(1).toInt();
+    if (command.startsWith("S")) {
+      yAxis = command.substring(1).toInt();
       if (yAxis > 1023) {
         yAxis = 1023;
       }
     }
 
-    if (commandString.startsWith("D")) {
-      xAxis = commandString.substring(1).toInt();
+    if (command.startsWith("D")) {
+      xAxis = command.substring(1).toInt();
       if (xAxis > 1023) {
         xAxis = 1023;
       }
     }
 
-    commandString = "";
+    command = "";
   }
 
   controller.setAxes(xAxis, yAxis);
@@ -54,12 +53,6 @@ void loop()
   unsigned int leftSpeed = controller.getLeftSpeed();
   unsigned int rightSpeed = controller.getRightSpeed();
 
-  Serial.print("Left speed: ");
-  Serial.print(leftSpeed);
-  Serial.println();
-  Serial.print("Right speed: ");
-  Serial.print(rightSpeed);
-  Serial.println();
 
   crawler.speed(leftSpeed, rightSpeed);
   crawler.run(direction);
