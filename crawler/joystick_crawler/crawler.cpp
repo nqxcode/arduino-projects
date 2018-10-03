@@ -81,7 +81,7 @@ void Crawler::refreshSpeed(void)
 
 void Crawler::buzz(void)
 {
-  tone (this->Buzzer, 700);
+  tone (this->Buzzer, 500);
   delay(100);
   tone(this->Buzzer, 1000);
   delay(100);
