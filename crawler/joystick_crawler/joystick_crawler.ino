@@ -3,7 +3,7 @@
 #include "controller.h"
 
 SoftwareSerial BTserial(2, 3); // RX | TX
-Crawler crawler(10, 12, 11, 13); // E1, M1, E2, M2
+Crawler crawler(10, 12, 11, 13, 4); // E1, M1, E2, M2
 Controller controller;
 
 
@@ -42,6 +42,10 @@ void loop()
       if (xAxis > 1023) {
         xAxis = 1023;
       }
+    }
+
+    if (command.startsWith("B1")) {
+      crawler.buzz();
     }
 
     command = "";

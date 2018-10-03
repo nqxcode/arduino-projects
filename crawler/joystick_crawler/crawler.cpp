@@ -5,13 +5,14 @@
 #include <Arduino.h>
 #include "crawler.h"
 
-Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2)
-  : E1(e1), M1(m1), E2(e2), M2(m2) {
+Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2, unsigned int buzzer)
+  : E1(e1), M1(m1), E2(e2), M2(m2), Buzzer(buzzer) {
 }
 
 void Crawler::begin(void) {
-  pinMode(M1, OUTPUT);
-  pinMode(M2, OUTPUT);
+  pinMode(this->M1, OUTPUT);
+  pinMode(this->M2, OUTPUT);
+  pinMode(this->Buzzer, OUTPUT);
 }
 
 void Crawler::debug(String message)
@@ -78,3 +79,11 @@ void Crawler::refreshSpeed(void)
   analogWrite(E1, this->leftSpeed);
 }
 
+void Crawler::buzz(void)
+{
+  tone (this->Buzzer, 700);
+  delay(100);
+  tone(this->Buzzer, 1000);
+  delay(100);
+  noTone(this->Buzzer);
+}
