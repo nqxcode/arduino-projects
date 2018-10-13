@@ -1,3 +1,10 @@
+
+/*
+   Arduino Robot Car Wireless Control using the NRF24L01 Transceiver module
+             == Transmitter - Joystick ==
+   by Dejan Nedelkovski, www.HowToMechatronics.com
+   Library: TMRh20/RF24, https://github.com/tmrh20/RF24/
+*/
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -35,7 +42,7 @@ void loop() {
 
   xAxis = analogRead(A1); // Read Joysticks X-axis
   yAxis = analogRead(A2); // Read Joysticks Y-axis
-
+  
   String command = "xy:" + xAxis + "," + yAxis + ";";
  
   command.toCharArray(commandData, 14);
