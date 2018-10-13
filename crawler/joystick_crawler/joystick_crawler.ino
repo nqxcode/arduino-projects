@@ -1,6 +1,7 @@
+#include "DigitalIO.h"
 #include "nRF24L01.h"
 #include "RF24.h"
-#include "DigitalIO.h"
+
 #include "crawler.h"
 #include "controller.h"
 
