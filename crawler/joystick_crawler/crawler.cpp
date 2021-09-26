@@ -6,7 +6,7 @@
 #include "crawler.h"
 
 Crawler::Crawler(unsigned int e1, unsigned int m1, unsigned int e2, unsigned int m2, unsigned int buzzer)
-  : E1(e1), M1(m1), E2(e2), M2(m2), Buzzer(buzzer) {
+  : E1(e1), M1(m1), E2(e2), M2(m2), Buzzer(buzzer) {    
 }
 
 void Crawler::begin(void) {
@@ -86,4 +86,9 @@ void Crawler::buzz(void)
   tone(this->Buzzer, 1000);
   delay(100);
   noTone(this->Buzzer);
+}
+
+void Crawler::enableDebugMode(void)
+{
+ this->debugMode = true; 
 }

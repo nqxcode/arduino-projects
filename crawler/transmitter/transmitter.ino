@@ -42,4 +42,5 @@ void loop() {
   radio.write(&commandData, sizeof(commandData)); // Send the array data (command) to the other NRF24L01 module
 
   delay(10);
+  //Serial.println(command);
 }

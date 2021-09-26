@@ -1,3 +1,10 @@
+#define SOFTSPI 
+
+#define SOFT_SPI_MISO_PIN 7
+#define SOFT_SPI_MOSI_PIN 6
+#define SOFT_SPI_SCK_PIN 5
+
+
 #include "DigitalIO.h"
 #include "nRF24L01.h"
 #include "RF24.h"
@@ -7,7 +14,7 @@
 
 SoftSPI<SOFT_SPI_MISO_PIN, SOFT_SPI_MOSI_PIN, SOFT_SPI_SCK_PIN, SPI_MODE> spi;
 
-RF24 radio(8, 9); // "создать" модуль на пинах 9 и 10 Для Уно
+RF24 radio(8, 9); // "создать" модуль на пинах 8 и 9 Для Уно
 
 byte address[][6] = {"1Node", "2Node", "3Node", "4Node", "5Node", "6Node"}; //возможные номера труб
 char receivedData[32] = "";
@@ -22,8 +29,9 @@ unsigned int yAxis = 512;
 
 void setup()
 {
+  //crawler.enableDebugMode();
   Serial.begin(9600);
-  crawler.begin();
+  crawler.begin();  
   command.reserve(32);
 
   radio.begin(); //активировать модуль
@@ -73,5 +81,5 @@ void loop()
 
 
   crawler.speed(leftSpeed, rightSpeed);
-  crawler.run(direction);
+  crawler.run(direction); 
 }

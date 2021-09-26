@@ -13,7 +13,8 @@ class Crawler {
 
     void run(Direction direction);
     void speed(unsigned int leftSpeed, unsigned int rightSpeed);
-    void buzz(void);
+    void buzz(void); 
+    void enableDebugMode(void);
 
   private:
     unsigned int E1;
@@ -25,7 +26,7 @@ class Crawler {
     unsigned int leftSpeed;
     unsigned int rightSpeed;
 
-    void refreshSpeed(void);
-
     bool debugMode = false;
+
+    void refreshSpeed(void);    
 };
