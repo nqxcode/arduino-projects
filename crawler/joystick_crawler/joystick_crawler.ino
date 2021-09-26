@@ -14,7 +14,7 @@
 
 SoftSPI<SOFT_SPI_MISO_PIN, SOFT_SPI_MOSI_PIN, SOFT_SPI_SCK_PIN, SPI_MODE> spi;
 
-RF24 radio(8, 9); // "создать" модуль на пинах 8 и 9 Для Уно
+RF24 radio(8, 9); // "создать" модуль на пинах 8 (CE) и 9 (CS(N)) для Уно
 
 byte address[][6] = {"1Node", "2Node", "3Node", "4Node", "5Node", "6Node"}; //возможные номера труб
 char receivedData[32] = "";
